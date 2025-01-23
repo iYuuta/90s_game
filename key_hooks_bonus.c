@@ -1,16 +1,19 @@
 #include "so_long_bonus.h"
+#include "verify_map_bonus/check_bonus.h"
 
 int	move_player(t_map **map, int *a, int *b)
 {
 	if ((*map)->map[*a][*b] == 'N')
 	{
 		write(1, "you lost nigga!!\n", 18);
-		exit (0);
+		destroy_map(*map, NULL);
+		exit(0);
 	}
 	if ((*map)->collected == (*map)->collectables && (*map)->map[*a][*b] == 'E')
 	{
 		write(1, "you WON nigga!!\n", 17);
-		exit (0);
+		destroy_map(*map, NULL);
+		exit(0);
 	}
 	if ((*map)->map[*a][*b] == '1' || (*map)->map[*a][*b] == 'E')
 		return (0);
@@ -72,6 +75,7 @@ int	key_hook(int keycode, t_map *map)
 	{
 		printf("Escape key pressed! Exiting...\n");
 		mlx_destroy_window(map->mlx, map->win);
+		destroy_map(map, NULL);
 		exit(0);
 	}
 	if (!key_detecotor(keycode, &map, &new_x, &new_y))

@@ -12,7 +12,7 @@ void	player_facing(t_map *map, t_textures t, int a, int b)
 		mlx_put_image_to_window(map->mlx, map->win, t.p_3, b * 32, a * 32);
 }
 
-void	initialize_textures(t_textures *texture, void **mlx)
+int	initialize_textures(t_textures *texture, void **mlx)
 {
 	int	a;
 	int	b;
@@ -30,6 +30,11 @@ void	initialize_textures(t_textures *texture, void **mlx)
 	texture->p_2 = mlx_xpm_file_to_image(*mlx,
 			"textures/player_right.xpm", &a, &b);
 	texture->n = mlx_xpm_file_to_image(*mlx, "textures/enemy.xpm", &a, &b);
+	if (!texture->f || !texture->w || !texture->e || !texture->e2
+		|| !texture->c || !texture->p_1 || !texture->p_2
+		|| !texture->p_3 || !texture->p_4 || !texture->n)
+		return (0);
+	return (1);
 }
 
 char	**read_map(int fd)
@@ -88,15 +93,12 @@ void	create_window(t_map *m, int a, int b)
 		}
 	}
 }
-// void f()
-// {
-// 	system("leaks so_long_bonus");
-// }
 
 int	main(int ac, char **av)
 {
-	t_map	*maps;
-	int		fd;
+	t_map		*maps;
+	t_textures	tmp;
+	int			fd;
 
 	if (ac != 2)
 		return (0);
@@ -105,11 +107,13 @@ int	main(int ac, char **av)
 		return (perror("invalid file\n"), 0);
 	maps = check_map(fd);
 	if (maps == NULL)
-		return (perror("empty map\n"), 0);
+		return (0);
 	maps->moves = 0;
 	maps->mlx = mlx_init();
 	maps->win = mlx_new_window(maps->mlx, 32 * maps->length,
 			32 * maps->width, "so_long_bonus");
+	if (!initialize_textures(&tmp, &(maps->mlx)))
+		exit(0);
 	move_detector(maps);
 	mlx_loop(maps->mlx);
 }

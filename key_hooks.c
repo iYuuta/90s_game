@@ -1,5 +1,19 @@
 #include "so_long.h"
 
+void	free_mlx(t_map **map)
+{
+	int	i;
+	int	j;
+
+	i = -1;
+	while ((*map)->map[++i])
+		free((*map)->map[i]);
+	free((*map)->map);
+	mlx_destroy_window((*map)->mlx, (*map)->win);
+	free(*map);
+	exit(0);
+}
+
 int	move_player(t_map **map, int *a, int *b)
 {
 	void	*portal;
@@ -9,7 +23,7 @@ int	move_player(t_map **map, int *a, int *b)
 		portal = mlx_xpm_file_to_image((*map)->mlx,
 				"textures/portal.xpm", a, b);
 		write(1, "you won nigga!!!\n", 18);
-		exit(0);
+		free_mlx(map);
 	}
 	if ((*map)->map[*a][*b] == '1' || (*map)->map[*a][*b] == 'E')
 		return (0);

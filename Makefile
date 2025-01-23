@@ -15,7 +15,7 @@ NAME = so_long
 BONUS_NAME = so_long_bonus
 
 CC = cc
-CFLAGS = -Wall -Wextra 
+CFLAGS =  -Wall -Wextra 
 
 all: $(NAME)
 

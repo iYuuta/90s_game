@@ -8,6 +8,7 @@ void	bucket_fill(t_map **map, int x, int y, int *exit);
 void	find_player(char **map, int *a, int *b);
 int		count_elements(t_map **map);
 int		is_map_valid(t_map **original, t_map *copy);
+void	destroy_map(t_map *dup, t_map *map);
 t_map	*check_map(int fd);
 
 #endif

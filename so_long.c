@@ -1,6 +1,6 @@
 #include "so_long.h"
 
-void	initialize_textures(t_textures *t, void **mlx)
+int	initialize_textures(t_textures *t, void **mlx)
 {
 	int	a;
 	int	b;
@@ -12,6 +12,9 @@ void	initialize_textures(t_textures *t, void **mlx)
 	t->c = mlx_xpm_file_to_image(*mlx, "textures/coin.xpm", &a, &b);
 	t->p = mlx_xpm_file_to_image(*mlx, "textures/p_front.xpm", &a, &b);
 	t->n = mlx_xpm_file_to_image(*mlx, "textures/enemy.xpm", &a, &b);
+	if (!t->f || !t->w || !t->e || !t->e2 || !t->c || !t->p || !t->n)
+		return (0);
+	return (1);
 }
 
 char	**read_map(int fd)
@@ -71,15 +74,11 @@ void	create_window(t_map *m, int a, int b)
 	}
 }
 
-// void f()
-// {
-// 	system("leaks so_long");
-// }
-
 int	main(int ac, char **av)
 {
-	t_map	*maps;
-	int		fd;
+	t_map		*maps;
+	t_textures	tmp;
+	int			fd;
 
 	if (ac != 2)
 		return (0);
@@ -93,6 +92,8 @@ int	main(int ac, char **av)
 	maps->mlx = mlx_init();
 	maps->win = mlx_new_window(maps->mlx, 32 * maps->length,
 			32 * maps->width, "so_long");
+	if (!initialize_textures(&tmp, &(maps->mlx)))
+		exit(0);
 	move_detector(maps);
 	mlx_loop(maps->mlx);
 }

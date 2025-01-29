@@ -1,5 +1,4 @@
-#include "../so_long_bonus.h"
-#include "check_bonus.h"
+#include "so_long_bonus.h"
 
 void	find_player(char **map, int *a, int *b)
 {
@@ -34,7 +33,7 @@ int	is_valid(t_map *map, int x, int y)
 		return (0);
 	if (y < 0 || !map->map[x][y])
 		return (0);
-	if (map->map[x][y] == '1')
+	if (map->map[x][y] == '1' || map->map[x][y] == 'N')
 		return (0);
 	return (1);
 }
@@ -98,15 +97,15 @@ int	is_map_valid(t_map **original, t_map *copy)
 	exit = 0;
 	if (!count_elements(original) || (*original)->character != 1
 		|| (*original)->exit != 1 || (*original)->collectables < 1)
-		return (perror("invalid elements\n"), 0);
+		return (0);
 	find_player(copy->map, &copy->x, &copy->y);
 	find_player((*original)->map, &(*original)->x, &(*original)->y);
 	copy->collectables = 0;
 	copy->exit = 0;
 	bucket_fill(&copy, copy->x, copy->y, &exit);
 	if (copy->collectables != (*original)->collectables)
-		return (perror("collectables or exit are not reachable\n"), 0);
+		return (write(2, "collectables or exit are not reachable\n", 40), 0);
 	if (copy->exit != 1)
-		return (perror("Exit not reachable\n"), 0);
+		return (write(2, "Exit not reachable\n", 20), 0);
 	return (1);
 }

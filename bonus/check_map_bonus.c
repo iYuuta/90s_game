@@ -1,5 +1,4 @@
-#include "../so_long.h"
-#include "check.h"
+#include "so_long_bonus.h"
 
 t_map	*duplicate_map(t_map *data)
 {

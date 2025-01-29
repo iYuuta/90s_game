@@ -1,5 +1,4 @@
-#include "../so_long_bonus.h"
-#include "check_bonus.h"
+#include "so_long.h"
 
 t_map	*duplicate_map(t_map *data)
 {
@@ -31,13 +30,11 @@ t_map	*duplicate_map(t_map *data)
 
 t_map	*map_data(int fd, t_map *maps)
 {
-	if (fd < 0)
-		return (0);
 	maps->map = read_map(fd);
 	if (maps->map == NULL)
 	{
 		free(maps);
-		return (perror("No map"), NULL);
+		return (NULL);
 	}
 	maps->width = -1;
 	while (maps->map[++maps->width])
@@ -75,6 +72,8 @@ int	check_borders(t_map *map)
 	int	l;
 
 	l = 0;
+	if (ft_strlen(map->map[0]) > 256)
+		return (0);
 	while (map->map[l])
 	{
 		i = 0;

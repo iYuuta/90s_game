@@ -101,14 +101,14 @@ int	main(int ac, char **av)
 	int			fd;
 
 	if (ac != 2)
-		return (0);
+		return (write(2, "you didn't add a map\n", 22), 0);
 	fd = open(av[1], O_RDONLY);
 	if (fd < 0)
-		return (perror("invalid file\n"), 0);
+		return (close(fd), write(2, "invalid file\n", 14), 0);
 	maps = check_map(fd);
 	if (maps == NULL)
-		return (0);
-	maps->moves = 0;
+		return (write(2, "invalid map\n", 13), 0);
+	maps->moves = 1;
 	maps->mlx = mlx_init();
 	maps->win = mlx_new_window(maps->mlx, 32 * maps->length,
 			32 * maps->width, "so_long_bonus");

@@ -1,17 +1,16 @@
 #include "so_long_bonus.h"
-#include "verify_map_bonus/check_bonus.h"
 
 int	move_player(t_map **map, int *a, int *b)
 {
 	if ((*map)->map[*a][*b] == 'N')
 	{
-		write(1, "you lost nigga!!\n", 18);
+		write(1, "you lost!!\n", 12);
 		destroy_map(*map, NULL);
 		exit(0);
 	}
 	if ((*map)->collected == (*map)->collectables && (*map)->map[*a][*b] == 'E')
 	{
-		write(1, "you WON nigga!!\n", 17);
+		write(1, "you WON!!\n", 11);
 		destroy_map(*map, NULL);
 		exit(0);
 	}
@@ -25,16 +24,6 @@ int	move_player(t_map **map, int *a, int *b)
 	(*map)->x = *a;
 	(*map)->y = *b;
 	return (1);
-}
-
-void	update_movement(t_map *map)
-{
-	char	*movements;
-
-	movements = ft_itoa(map->moves);
-	create_window(map, 0, 0);
-	mlx_string_put(map->mlx, map->win, 5, 5, 0xFFFFFF, movements);
-	free(movements);
 }
 
 int	key_detecotor(int keycode, t_map **map, int *a, int *b)
@@ -64,25 +53,33 @@ int	key_detecotor(int keycode, t_map **map, int *a, int *b)
 	return (1);
 }
 
+int	close_window(t_map *param)
+{
+	write(1, "Exiting...\n", 12);
+	mlx_destroy_window(param->mlx, param->win);
+	destroy_map(param, NULL);
+	exit(0);
+	return (0);
+}
+
 int	key_hook(int keycode, t_map *map)
 {
-	int	new_x;
-	int	new_y;
+	int		new_x;
+	int		new_y;
+	char	*movements;
 
 	new_x = map->x;
 	new_y = map->y;
 	if (keycode == KEY_ESC)
-	{
-		printf("Escape key pressed! Exiting...\n");
-		mlx_destroy_window(map->mlx, map->win);
-		destroy_map(map, NULL);
-		exit(0);
-	}
+		close_window(map);
 	if (!key_detecotor(keycode, &map, &new_x, &new_y))
 		return (0);
 	if (move_player(&map, &new_x, &new_y) == 1)
 	{
-		update_movement(map);
+		movements = ft_itoa(map->moves);
+		create_window(map, 0, 0);
+		mlx_string_put(map->mlx, map->win, 5, 5, 0xFFFFFF, movements);
+		free(movements);
 		map->moves++;
 	}
 	return (0);
@@ -92,6 +89,7 @@ int	move_detector(t_map *map)
 {
 	map->collected = 0;
 	mlx_key_hook(map->win, key_hook, map);
+	mlx_hook(map->win, 17, 0, close_window, map);
 	create_window(map, 0, 0);
 	mlx_loop(map->mlx);
 	return (0);

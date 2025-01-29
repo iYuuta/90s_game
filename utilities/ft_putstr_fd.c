@@ -1,4 +1,4 @@
-#include "../so_long.h"
+#include "so_long_utils.h"
 
 void	ft_putstr_fd(char *s, int fd)
 {

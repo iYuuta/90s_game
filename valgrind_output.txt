@@ -1,7 +1,0 @@
-==17832== Memcheck, a memory error detector
-==17832== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
-==17832== Using Valgrind-3.18.1 and LibVEX; rerun with -h for copyright info
-==17832== Command: ./so_long maps/map1.ber
-==17832== Parent PID: 1596
-==17832== 
-==17832== FATAL: can't open suppressions file "minilibx.supp"

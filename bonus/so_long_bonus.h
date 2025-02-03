@@ -6,6 +6,7 @@
 # include <stdlib.h>
 # include <fcntl.h>
 # include <errno.h>
+# include <stdio.h>
 # include "../utilities/so_long_utils.h"
 
 # define KEY_W 119

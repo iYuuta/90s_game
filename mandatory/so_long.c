@@ -33,7 +33,7 @@ char	**read_map(int fd)
 		if (tmp == NULL)
 			break ;
 		if (tmp[0] == '\n')
-			return (free(tmp), free(lines), NULL);
+			return (close(fd), free(tmp), free(lines), NULL);
 		lines = ft_strjoin(&lines, tmp);
 		free(tmp);
 	}
@@ -56,7 +56,7 @@ void	create_window(t_map *m, int a, int b)
 			else if (m->map[a][b] == '1')
 				put_texture(m, "textures/wall.xpm", b * 32, a * 32);
 			else if (m->map[a][b] == 'P')
-				put_texture(m, "textures/p_front.xpm", b * 32, a * 32);
+				put_texture(m, "textures/player_front.xpm", b * 32, a * 32);
 			else if (m->map[a][b] == 'C')
 				put_texture(m, "textures/coin.xpm", b * 32, a * 32);
 			else if (m->map[a][b] == 'E' && m->collectables != m->collected)

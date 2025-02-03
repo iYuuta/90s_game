@@ -1,15 +1,20 @@
 #include "so_long_bonus.h"
 
-void	player_facing(t_map *map, t_textures t, int a, int b)
+void	*player_facing(t_map *map)
 {
+	void	*player;
+	int		a;
+	int		b;
+
 	if (map->facing == 1)
-		mlx_put_image_to_window(map->mlx, map->win, t.p_1, b * 32, a * 32);
+		player = mlx_xpm_file_to_image(map->mlx, "textures/player_back.xpm", &a, &b);
 	else if (map->facing == 2)
-		mlx_put_image_to_window(map->mlx, map->win, t.p_2, b * 32, a * 32);
-	else if (map->facing == 4)
-		mlx_put_image_to_window(map->mlx, map->win, t.p_4, b * 32, a * 32);
+		player = mlx_xpm_file_to_image(map->mlx, "textures/player_right.xpm", &a, &b);
+	else if (map->facing == 3)
+		player = mlx_xpm_file_to_image(map->mlx, "textures/player_front.xpm", &a, &b);
 	else
-		mlx_put_image_to_window(map->mlx, map->win, t.p_3, b * 32, a * 32);
+		player = mlx_xpm_file_to_image(map->mlx, "textures/player_left.xpm", &a, &b);
+	return (player);
 }
 
 void	put_texture(t_map *map, char *str, int x, int y)
@@ -18,7 +23,10 @@ void	put_texture(t_map *map, char *str, int x, int y)
 	int	b;
 	void *picture;
 
-	picture = mlx_xpm_file_to_image(map->mlx, str, &a, &b);
+	if (!str)
+		picture = player_facing(map);
+	else
+		picture = mlx_xpm_file_to_image(map->mlx, str, &a, &b);
 	if (!picture)
 		clean_up(map);
 	mlx_put_image_to_window(map->mlx, map->win, picture, x, y);
@@ -45,7 +53,7 @@ char	**read_map(int fd)
 		if (tmp == NULL)
 			break ;
 		if (tmp[0] == '\n')
-			return (free(tmp), free(lines), NULL);
+			return (close(fd), free(tmp), free(lines), NULL);
 		lines = ft_strjoin(&lines, tmp);
 		free(tmp);
 	}
@@ -68,7 +76,7 @@ void	create_window(t_map *m, int a, int b)
 			else if (m->map[a][b] == '1')
 				put_texture(m, "textures/wall.xpm", b * 32, a * 32);
 			else if (m->map[a][b] == 'P')
-				put_texture(m, "textures/p_front.xpm", b * 32, a * 32);
+				put_texture(m, NULL, b * 32, a * 32);
 			else if (m->map[a][b] == 'C')
 				put_texture(m, "textures/coin.xpm", b * 32, a * 32);
 			else if (m->map[a][b] == 'N')
@@ -95,6 +103,7 @@ int	main(int ac, char **av)
 	if (maps == NULL)
 		return (write(2, "invalid map\n", 13), 0);
 	maps->moves = 1;
+	maps->facing = 3;
 	maps->mlx = mlx_init();
 	if (!maps->mlx)
 		return (destroy_map(maps, NULL), write(2, "error\n", 7), 0);

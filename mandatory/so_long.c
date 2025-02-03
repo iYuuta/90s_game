@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   so_long.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: yoayedde <yoayedde@student.42.fr>          #+#  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025-01-23 01:00:36 by yoayedde          #+#    #+#             */
+/*   Updated: 2025-01-23 01:00:36 by yoayedde         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "so_long.h"
 
 int	initialize_textures(t_textures *t, void **mlx)
@@ -36,13 +48,14 @@ char	**read_map(int fd)
 		tmp = get_next_line(fd);
 		if (tmp == NULL)
 			break ;
+		if (tmp[0] == '\n')
+			return (free(tmp), free(lines), NULL);
 		lines = ft_strjoin(&lines, tmp);
 		free(tmp);
 	}
 	close(fd);
 	map = ft_split(lines, '\n');
-	free(lines);
-	return (map);
+	return (free(lines), map);
 }
 
 void	create_window(t_map *m, int a, int b)
@@ -74,12 +87,17 @@ void	create_window(t_map *m, int a, int b)
 	}
 }
 
+void f()
+{
+	system("leaks so_long");
+}
 int	main(int ac, char **av)
 {
 	t_map		*maps;
 	t_textures	tmp;
 	int			fd;
 
+	atexit(f);
 	if (ac != 2)
 		return (write(2, "you didn't add a map\n", 22), 0);
 	fd = open(av[1], O_RDONLY);
@@ -90,10 +108,13 @@ int	main(int ac, char **av)
 		return (write(2, "invalid map\n", 13), 0);
 	maps->moves = 1;
 	maps->mlx = mlx_init();
-	maps->win = mlx_new_window(maps->mlx, 32 * maps->length,
-			32 * maps->width, "so_long");
+	if (!maps->mlx)
+		return (destroy_map(maps, NULL), write(2, "error\n", 7), 0);
+	maps->win = NULL;
+	if (!maps->win)
+		return (free(maps->mlx), destroy_map(maps, NULL), write(2, "error in new windo\n", 20), 0);
 	if (!initialize_textures(&tmp, &(maps->mlx)))
-		exit(0);
+		return (0);
 	move_detector(maps);
 	mlx_loop(maps->mlx);
 }

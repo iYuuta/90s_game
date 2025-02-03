@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   so_long.h                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: yoayedde <yoayedde@student.42.fr>          #+#  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025-01-23 01:13:57 by yoayedde          #+#    #+#             */
+/*   Updated: 2025-01-23 01:13:57 by yoayedde         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef SO_LONG_H
 # define SO_LONG_H
 
@@ -5,7 +17,6 @@
 # include <mlx.h>
 # include <stdlib.h> 
 # include <fcntl.h>
-# include <stdio.h>
 # include <errno.h>
 # include "../utilities/so_long_utils.h"
 

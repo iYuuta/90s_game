@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   so_long_bonus.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: yoayedde <yoayedde@student.42.fr>          #+#  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025-01-23 01:00:29 by yoayedde          #+#    #+#             */
+/*   Updated: 2025-01-23 01:00:29 by yoayedde         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "so_long_bonus.h"
 
 void	player_facing(t_map *map, t_textures t, int a, int b)
@@ -56,13 +68,14 @@ char	**read_map(int fd)
 		tmp = get_next_line(fd);
 		if (tmp == NULL)
 			break ;
+		if (tmp[0] == '\n')
+			return (free(tmp), free(lines), NULL);
 		lines = ft_strjoin(&lines, tmp);
 		free(tmp);
 	}
 	close(fd);
 	map = ft_split(lines, '\n');
-	free(lines);
-	return (map);
+	return (free(lines), map);
 }
 
 void	create_window(t_map *m, int a, int b)

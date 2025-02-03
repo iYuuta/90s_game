@@ -1,30 +1,19 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   so_long.h                                          :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: yoayedde <yoayedde@student.42.fr>          #+#  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025-01-23 01:13:57 by yoayedde          #+#    #+#             */
-/*   Updated: 2025-01-23 01:13:57 by yoayedde         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #ifndef SO_LONG_H
 # define SO_LONG_H
 
 # include <unistd.h>
-# include <mlx.h>
+# include "../minilibx-linux/mlx.h"
 # include <stdlib.h> 
 # include <fcntl.h>
 # include <errno.h>
+# include <stdio.h>
 # include "../utilities/so_long_utils.h"
 
-# define KEY_W 13
-# define KEY_A 0
-# define KEY_S 1 
-# define KEY_D 2
-# define KEY_ESC 53
+# define KEY_W 119
+# define KEY_A 97
+# define KEY_S 115
+# define KEY_D 100
+# define KEY_ESC 65307
 
 typedef struct s_map
 {
@@ -65,5 +54,6 @@ void	find_player(char **map, int *a, int *b);
 int		count_elements(t_map **map);
 int		is_map_valid(t_map **original, t_map *copy);
 void	destroy_map(t_map *dup, t_map *map);
+int		clean_up(t_map *map);
 
 #endif

@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   so_long_bonus.c                                    :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: yoayedde <yoayedde@student.42.fr>          #+#  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025-01-23 01:00:29 by yoayedde          #+#    #+#             */
-/*   Updated: 2025-01-23 01:00:29 by yoayedde         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "so_long_bonus.h"
 
 void	player_facing(t_map *map, t_textures t, int a, int b)
@@ -24,29 +12,17 @@ void	player_facing(t_map *map, t_textures t, int a, int b)
 		mlx_put_image_to_window(map->mlx, map->win, t.p_3, b * 32, a * 32);
 }
 
-int	initialize_textures(t_textures *texture, void **mlx)
+void	put_texture(t_map *map, char *str, int x, int y)
 {
 	int	a;
 	int	b;
+	void *picture;
 
-	texture->f = mlx_xpm_file_to_image(*mlx, "textures/floor.xpm", &a, &b);
-	texture->w = mlx_xpm_file_to_image(*mlx, "textures/wall.xpm", &a, &b);
-	texture->e = mlx_xpm_file_to_image(*mlx, "textures/portal.xpm", &a, &b);
-	texture->e2 = mlx_xpm_file_to_image(*mlx, "textures/portal2.xpm", &a, &b);
-	texture->c = mlx_xpm_file_to_image(*mlx, "textures/coin.xpm", &a, &b);
-	texture->p_3 = mlx_xpm_file_to_image(*mlx, "textures/p_front.xpm", &a, &b);
-	texture->p_1 = mlx_xpm_file_to_image(*mlx,
-			"textures/player_back.xpm", &a, &b);
-	texture->p_4 = mlx_xpm_file_to_image(*mlx,
-			"textures/player_left.xpm", &a, &b);
-	texture->p_2 = mlx_xpm_file_to_image(*mlx,
-			"textures/player_right.xpm", &a, &b);
-	texture->n = mlx_xpm_file_to_image(*mlx, "textures/enemy.xpm", &a, &b);
-	if (!texture->f || !texture->w || !texture->e || !texture->e2
-		|| !texture->c || !texture->p_1 || !texture->p_2
-		|| !texture->p_3 || !texture->p_4 || !texture->n)
-		return (0);
-	return (1);
+	picture = mlx_xpm_file_to_image(map->mlx, str, &a, &b);
+	if (!picture)
+		clean_up(map);
+	mlx_put_image_to_window(map->mlx, map->win, picture, x, y);
+	mlx_destroy_image(map->mlx, picture);
 }
 
 char	**read_map(int fd)
@@ -80,9 +56,7 @@ char	**read_map(int fd)
 
 void	create_window(t_map *m, int a, int b)
 {
-	t_textures	t;
 
-	initialize_textures(&t, &(m->mlx));
 	a = -1;
 	while (m->map[++a])
 	{
@@ -90,19 +64,19 @@ void	create_window(t_map *m, int a, int b)
 		while (m->map[a][++b])
 		{
 			if (m->map[a][b] == '0')
-				mlx_put_image_to_window(m->mlx, m->win, t.f, b * 32, a * 32);
+				put_texture(m, "textures/floor.xpm", b * 32, a * 32);
 			else if (m->map[a][b] == '1')
-				mlx_put_image_to_window(m->mlx, m->win, t.w, b * 32, a * 32);
+				put_texture(m, "textures/wall.xpm", b * 32, a * 32);
 			else if (m->map[a][b] == 'P')
-				player_facing(m, t, a, b);
-			else if (m->map[a][b] == 'N')
-				mlx_put_image_to_window(m->mlx, m->win, t.n, b * 32, a * 32);
+				put_texture(m, "textures/p_front.xpm", b * 32, a * 32);
 			else if (m->map[a][b] == 'C')
-				mlx_put_image_to_window(m->mlx, m->win, t.c, b * 32, a * 32);
+				put_texture(m, "textures/coin.xpm", b * 32, a * 32);
+			else if (m->map[a][b] == 'N')
+				put_texture(m, "textures/enemy.xpm", b * 32, a * 32);
 			else if (m->map[a][b] == 'E' && m->collectables != m->collected)
-				mlx_put_image_to_window(m->mlx, m->win, t.e, b * 32, a * 32);
+				put_texture(m, "textures/portal.xpm", b * 32, a * 32);
 			else
-				mlx_put_image_to_window(m->mlx, m->win, t.e2, b * 32, a * 32);
+				put_texture(m, "textures/portal2.xpm", b * 32, a * 32);
 		}
 	}
 }
@@ -110,7 +84,6 @@ void	create_window(t_map *m, int a, int b)
 int	main(int ac, char **av)
 {
 	t_map		*maps;
-	t_textures	tmp;
 	int			fd;
 
 	if (ac != 2)
@@ -123,10 +96,12 @@ int	main(int ac, char **av)
 		return (write(2, "invalid map\n", 13), 0);
 	maps->moves = 1;
 	maps->mlx = mlx_init();
+	if (!maps->mlx)
+		return (destroy_map(maps, NULL), write(2, "error\n", 7), 0);
 	maps->win = mlx_new_window(maps->mlx, 32 * maps->length,
-			32 * maps->width, "so_long_bonus");
-	if (!initialize_textures(&tmp, &(maps->mlx)))
-		exit(0);
+			32 * maps->width, "so_long_bonus");;
+	if (!maps->win)
+		return (free(maps->mlx), destroy_map(maps, NULL), write(2, "error\n", 7), 0);
 	move_detector(maps);
 	mlx_loop(maps->mlx);
 }

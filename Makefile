@@ -14,18 +14,18 @@ CFLAGS = -Wall -Wextra -Werror
 NAME = so_long
 BONUS_NAME = so_long_bonus
 
-mlxFLAGS = -lmlx -framework OpenGL -framework AppKit
+mlxFLAGS = -lXext -lX11 -lm
 
 
 all: $(NAME)
 
 $(NAME): $(OBJS) $(UOBJS)
-	$(CC) $(OBJS) $(UOBJS) $(mlxFLAGS) -o $(NAME)
+	$(CC) $(OBJS) $(UOBJS) minilibx-linux/libmlx.a $(mlxFLAGS) -o $(NAME)
 
 bonus: $(BONUS_NAME)
 
 $(BONUS_NAME): $(BOBJS) $(UOBJS)
-	$(CC) $(BOBJS) $(UOBJS) $(mlxFLAGS) -o $(BONUS_NAME)
+	$(CC) $(BOBJS) $(UOBJS) minilibx-linux/libmlx.a $(mlxFLAGS) -o $(BONUS_NAME)
 
 mandatory/%.o: mandatory/%.c mandatory/so_long.h
 	$(CC) $(CFLAGS) -c $< -o $@

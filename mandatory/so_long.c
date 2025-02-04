@@ -85,7 +85,7 @@ int	main(int ac, char **av)
 	if (!maps->mlx)
 		return (destroy_map(maps, NULL), write(2, "error\n", 7), 0);
 	maps->win = mlx_new_window(maps->mlx, 32 * maps->length,
-			32 * maps->width, "so_long");;
+			32 * maps->width, "so_long");
 	if (!maps->win)
 		return (free(maps->mlx), destroy_map(maps, NULL), write(2, "error\n", 7), 0);
 	move_detector(maps);
